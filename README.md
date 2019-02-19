@@ -4,3 +4,4 @@ This can be used to visualize and compare networks made from the HMP16Sdata pack
 # HMP16Snets
 Visualize and compare HMP16S data networks
 >>>>>>> 7132a8f0485b4ecd224bcc2c4fdd794d2c78c794
+This can be used to visualize and compare networks made from the HMP16Sdata package in R

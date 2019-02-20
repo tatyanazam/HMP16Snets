@@ -1,0 +1,99 @@
+---
+title: "HMP16Snets"
+author: "Tatyana Zamkovaya"
+date: "2/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(message = FALSE)
+```
+## Objective
+The goal of this app was to easily visualize and compare microbial community compositions between selected human body subsites using the publicly available HMP (Human Microbiome Project) V1-3 16S amplicon data found within the HMP16SData library. Microbiome analysis entails alpha diversity analysis, ordination analysis, and recently network analysis to understand the composition, relative abundance, and role of microbial species within a specific environment. Here, I wanted to compare the species presence, abundance, and overall networks between different human body sites, while also making the comparison easy and replicable, even for users unfamiliar with microbiome analysis. 
+
+## Initial Data Setup
+### Required libraries in R
+To utilize this app, the following list of libraries must be installed:
+```{r installlibraries, include=TRUE }
+library(phyloseq)
+library(SpiecEasi)
+library(magrittr)
+library(ggplot2)
+library(gridExtra)
+library(cowplot)
+library(dplyr)
+```
+For this app, all data come from the HMP16SData library, available in R.
+The HMP16SData library can be installed using BiocManager using the following command:
+BiocManager::install("HMP16SData")
+
+From this dataset, the Tongue Dorsum, Saliva, Left retroauricular Crease,Left Antecubital Fossa, Mid Vagina, Stool, and Anterior Nares human body subsites were selected, converted to phyloseq objects, and merged together for a comprehensive, full body site dataset, called V13_HMP_phylo1, where all taxa were present at least once in an individual sample. All 5 body sites (Oral, Skin, Gastrointestinal Tract, Urogenital Tract, and Airways) are represented by these 7 subsites, allowing for comparison to be possible not just between human body subsites, but also between the more general human body sites. 
+Below is a brief overview of the V13_HMP_phylo1:
+```{r V13_HMP_phylo1, include=TRUE}
+load("~/HMP16S/V13_HMP_phylo1.RData")
+V13_HMP_phylo1
+```
+Altogether, in addition to body study site and subsite, microbial composition comparisons can also be made by sex, run center, and the number of visits made by each given subject. 
+``` {r seepossiblecomparisonnames, include=TRUE}
+colnames(sample_data(V13_HMP_phylo1))
+head(sample_data(V13_HMP_phylo1))
+```
+By this manner, we can see if certain microbial species dominate specific body regions, are appearing from specific centers or are sex-specific. 
+
+## Alpha Diversity Analysis
+First, let's compare the alpha diversity between the human body subsites and sites. Alpha diversity is the measure of microbial diversity (taxonomic variation) within a sample. We can use different measures of richness, such as the Shannon or Simpson index, to quantify the alpha diversity of a given sample or sample category. For a more comprehensive analysis, we will use 3 richness measures- Observed, Shannon, and Simpson.
+```{r alphadiv, include=TRUE}
+richness_measures <- c("Observed", "Shannon", "Simpson")
+V13_HMP_phylo1 %>% plot_richness(x="Study", color="Study", measures=richness_measures) + stat_boxplot(geom="errorbar") + geom_boxplot() + theme_bw() + theme(axis.title.x = element_blank()) + theme(axis.text.x = element_text(angle=45, hjust=1))
+```
+From the boxplot comparison, we can conclude that the saliva,stool, and tongue samples show the most species diversity while samples from the midvagina are the most homegenous in terms of microbial species diversity. 
+
+## PCoA Analysis
+Next, we can conduct a principal component ordination analysis of the full dataset, using the Bray Curtis distance method. 
+
+```{r hmp_pcoa, include=TRUE, echo=FALSE}
+V13_HMP_phylo1_ord <- ordinate(V13_HMP_phylo1, method="PCoA", distance="bray")
+V13_HMP_phylo1 %>% plot_ordination(V13_HMP_phylo1_ord, color="Study", shape="HMP_BODY_SITE")
+```
+
+## Relative Abundance 
+
+To plot relative abundance by body subsite, first, subset samples to only include samples from that specific body subsite.
+For example,
+```{r relabun, include=TRUE}
+V13_stool_samples_only <- subset_samples(V13_HMP_phylo1, HMP_BODY_SUBSITE == "Stool")
+```
+Now, plot the top 10 most abundant taxa of each subsite, using 25 samples for faster processing and less memory. 
+```{r relabundplot, include=TRUE}
+sample_samples <- function(x, size) {
+    sampled_names <-
+        sample_names(x) %>%
+        sample(size)
+
+    prune_samples(sampled_names, x)
+}
+V13_stool_samples_only %>% 
+  sample_samples(25) -> V13_stool_samples_25
+V13_stool_plot <- plot_bar(V13_stool_samples_25, x="Sample", y="Abundance", fill="PHYLUM") + geom_bar(stat="identity") + theme_classic()
+```
+## Body Site Relative Abundance Comparison
+Now let's compare relative abundance of the top phyla across body sites
+```{r relabund_all, include=TRUE}
+V13_rel_abund_plot <- plot_bar(V13_HMP_phylo1, x="HMP_BODY_SITE", y="Abundance", fill="PHYLUM") + geom_bar(stat="identity") + theme_classic()
+```
+<!-- When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this: -->
+
+<!-- ```{r cars} -->
+<!-- summary(cars) -->
+<!-- ``` -->
+
+<!-- ## Including Plots -->
+
+<!-- You can also embed plots, for example: -->
+
+<!-- ```{r pressure, echo=FALSE} -->
+<!-- plot(pressure) -->
+<!-- ``` -->
+
+<!-- Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. -->

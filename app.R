@@ -90,7 +90,7 @@ server <- function(input, output, session){
   # library(ggplot2)
   # library(plotly)
   source("http://bioconductor.org/biocLite.R")
-  biocLite("phyloseq")
+  biocLite("phyloseq", suppressUpdates = TRUE)
   library(devtools)
   install_github("zdk123/SpiecEasi", dependencies = FALSE)
   for(package in c('phyloseq', 'igraph', 'SpiecEasi', 'ggplot2', 'plotly')){

@@ -89,7 +89,7 @@ server <- function(input, output, session){
   # library(SpiecEasi)
   # library(ggplot2)
   # library(plotly)
-  for(package in c('<phyloseq>', '<igraph>', '<SpiecEasi>', '<ggplot2>', '<plotly>')){
+  for(package in c('phyloseq', 'igraph', 'SpiecEasi', 'ggplot2', 'plotly')){
     if (!require(package, character.only = T, quietly=T)){
       install.packages(package)
       library(package, character.only=T)

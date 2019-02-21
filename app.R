@@ -84,22 +84,12 @@ ui <- dashboardPage(skin = "purple",
 )
 
 server <- function(input, output, session){
-  # library(phyloseq)
-  # library(igraph)
-  # library(SpiecEasi)
-  # library(ggplot2)
-  # library(plotly)
-  source("http://bioconductor.org/biocLite.R")
-  biocLite("phyloseq", suppressUpdates = TRUE)
   library(phyloseq)
-  devtools::install_github("zdk123/SpiecEasi", dependencies = FALSE)
+  library(igraph)
   library(SpiecEasi)
-  for(package in c('igraph', 'ggplot2', 'plotly')){
-    if (!require(package, character.only = T, quietly=T)){
-      install.packages(package)
-      library(package, character.only=T)
-    }
-  }
+  library(ggplot2)
+  library(plotly)
+  
   load("V13_HMP_phylo1.RData")
   
   #Relative Abundance Analysis

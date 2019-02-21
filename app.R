@@ -93,7 +93,7 @@ server <- function(input, output, session){
   biocLite("phyloseq", suppressUpdates = TRUE)
   library(phyloseq)
   if(!require('devtools',character.only = T, quietly=T)){
-    install.packages('devtools')
+    install.packages('devtools', dependencies = FALSE)
     library(devtools, character.only=T)
   }
   install_github("zdk123/SpiecEasi", dependencies = FALSE)

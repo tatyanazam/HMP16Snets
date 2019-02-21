@@ -84,11 +84,17 @@ ui <- dashboardPage(skin = "purple",
 )
 
 server <- function(input, output, session){
-  library(phyloseq)
-  library(igraph)
-  library(SpiecEasi)
-  library(ggplot2)
-  library(plotly)
+  # library(phyloseq)
+  # library(igraph)
+  # library(SpiecEasi)
+  # library(ggplot2)
+  # library(plotly)
+  for(package in c('<phyloseq>', '<igraph>', '<SpiecEasi>', '<ggplot2>', '<plotly>')){
+    if (!require(package, character.only = T, quietly=T)){
+      install.packages(package)
+      library(package, character.only=T)
+    }
+  }
   load("V13_HMP_phylo1.RData")
   
   #Relative Abundance Analysis

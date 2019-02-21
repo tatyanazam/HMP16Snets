@@ -10,7 +10,24 @@ output:
 
 This is an app to analyze and visualize HMP16S (Human Microbiome Project 16S rRNA) data, from the **HMP16Data** package in R. Common microbiome analysis steps, from Relative Abundance to Network Analysis, can be customized by categories including body site, sex, and taxonomic classification level. 
 
-## Before running this app make sure you have done the following steps:
+# Table of contents
+
+1. [Install Dependencies](#dep)
+2. [Run App](#run)
+3. [Objective](#obj)
+4. [Initial Data Setup](#setup)
+5. [Alpha Diversity Analysis](#alphadiv)
+6. [PCoA Analysis](#pcoa)
+7. [Relative Abundance](#relabund) 
+8. [Subsite Network Analysis](#subsitenet)
+9. [Complete body subsite Network](#completenet)
+
+
+10.[More Information](#moreinfo)
+
+
+## Install Dependencies <a name="dep"> </a>
+Before running this app make sure you have done the following steps:
 
 
 1. Have devtools and shiny already installed in R
@@ -38,16 +55,16 @@ for(package in c('igraph', 'ggplot2', 'plotly')){
   }
   
 ```
-
+## Run app <a name="run"></a>
 Now, use the convenient `runGitHub` function to see my app in action:
 
 
 `runGitHub("HMP16Snets", "tatyanazam")`
 
-## Objective
+## Objective <a name="obj"></a>
 The goal of this app was to easily visualize and compare microbial community compositions between selected human body subsites using the publicly available HMP (Human Microbiome Project) V1-3 16S amplicon data found within the HMP16SData library in R. Microbiome analysis often involves conducting a relative abundance analysis, alpha diversity analysis, ordination analysis, and recently network analysis to understand the composition, relative abundance, and role of microbial species within a specific environment. Here, I wanted to compare the species presence, abundance, and overall networks between different human body sites, while also making the comparison easy and replicable, even for users unfamiliar with microbiome analysis. 
 
-## Initial Data Setup
+## Initial Data Setup <a name="setup"></a>
 ### Required libraries in R
 Again, before running the app, the following list of libraries must be installed:
 
@@ -111,7 +128,7 @@ head(sample_data(V13_HMP_phylo1))
 ```
 By this manner, we can see if certain microbial species dominate specific body regions, are appearing from specific centers or are sex-specific. 
 
-## Alpha Diversity Analysis
+## Alpha Diversity Analysis <a name="alphadiv"></a>
 First, let's compare the alpha diversity between the human body subsites and sites. Alpha diversity is the measure of microbial diversity (taxonomic variation) within a sample. We can use different measures of richness, such as the Shannon or Simpson index, to quantify the alpha diversity of a given sample or sample category. For a more comprehensive analysis, we will use 3 richness measures- Observed, Shannon, and Simpson. Ideally, we would include as many samples as possible in this analysis. However, this would take too much time and memory to visualize. For these reasons, in the companion shiny app, for both Alpha Diversity Analysis and PCoA Analysis, only 100 samples were used to compare the taxonomic variation between categories. In the app, we can compare the differences in alpha diversity between subsites, sites, sex, and center by simply changing the input in the Comparison option.
 Below, we show how to do the alpha diversity analysis just between subsites.
 
@@ -134,20 +151,11 @@ plot_richness(V13_HMP_phylo1_100, x= "HMP_BODY_SUBSITE", color= "HMP_BODY_SUBSIT
 
 From the boxplot comparison, we can conclude that the saliva,stool, and tongue samples show the most species diversity while samples from the midvagina are the most homegenous in terms of microbial species diversity.
 
-## PCoA Analysis
+## PCoA Analysis <a name="pcoa"></a>
 Next, we can conduct a principal component ordination analysis of the 100 sample dataset, using the Bray Curtis distance method. Again, in the app, the color and shape of the samples can be customized by different categories. Users can also view how species separate in addition to how samples separate, by selecting biplot. 
 
 ```r
 V13_HMP_phylo1_ord_100 <- ordinate(V13_HMP_phylo1_100, method="PCoA", distance="bray")
-```
-
-```
-## Warning in vegdist(structure(c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, :
-## you have empty rows: their dissimilarities may be meaningless in method
-## "bray"
-```
-
-```r
 plot1 <- plot_ordination(V13_HMP_phylo1_100, V13_HMP_phylo1_ord_100, color="Study", shape="SEX") + ggtitle("PCoA of Samples")
 plot1
 ```
@@ -164,7 +172,7 @@ plot2
 
 From these 2 plots, we can see that samples differ most by the subsite where they were retrieved. Sex and run center did not influence the distribution of the samples. Samples cluster together based on subsite or body site.
 
-## Relative Abundance 
+## Relative Abundance <a name="relabund"></a>
 We can plot the relative abundance of taxa for each distinct subsites of the human body. To make this faster in the companion shiny app, we only included the most abundant taxa and samples with reads above 5000 for each subsite.
 Briefly, samples belonging to a specific subsite were merged together by the `subset_samples`, `filter_taxa`, `prune_samples`, and `transform_sample_counts` functions from **phyloseq**. Then, only taxa that occurred at least than 3 times in at least 20 % of all samples were kept, while all other, less abundant taxa were discarded. Lastly, any samples with low reads (less than 5000 total) were removed.
 Although in the app, we can select which subsite we want to see of the 7 possible options and also color by taxonomic rank (from Phylum to Genus), here, we will only show one subsite, where all bars are colored by Phylum. 
@@ -233,7 +241,7 @@ ggplot(V13_HMP_psmelt_3, aes(Sample, Abundance, fill = V13_HMP_psmelt_3$PHYLUM))
 
 Actinobacteria, Firmicutes, and Bacteroidetes are most abundant across subsites.
 
-## Subsite Network Analysis
+## Subsite Network Analysis <a name="subsitenet"></a>
 To create networks of each subsite, all subsite-specific samples were merged together. As this would be time-consuming to see here, please view the initial code within ***HMP_net_creation.R***. 
 The **SpiecEasi** network package was used to measure the relationship between taxa by neighborhood selection (by the function `spiec.easi` and the `mb` parameter), preventing any indirect, spurious associations. For each subsite, the resulting phyloseq object and igraph were kept and plotted using the `plot_network` function from **SpiecEasi**. This allowed for relationships present in each subsite to be easily visualized. In the app, users can select at which taxonomic level they prefer to see the network. Here, we will show how the network looks at Phylum level only.Each network was also resized by hub score to help users find the most important taxa within each subsite.
 
@@ -252,7 +260,7 @@ plot_network(new_phylo_for_net[["Graph"]], new_phylo_for_net[["Phylo"]], type='t
 ![](README_figs/README-subsite_nets-2.png)<!-- -->
 
 
-## Complete body subsite Network
+## Complete body subsite Network <a name="completenet"></a>
 To create the complete body subsite network, first only taxa present in at least 20 % of all samples were kept, with all others being discarded by the `filterTaxonMatrix` function from **seqtime**. The otu table and accompanying taxonomic table were then changed accordingly to keep only these resultant abundant taxa.The data used in the code chunk below was generated in the ***HMP16Screation.R*** file. The filtering and network creation took too long to feature here and should be viewed in the file mentioned above.
 
 ```r
@@ -276,4 +284,7 @@ p2
 #ggplotly(p2)
 ```
 
+## More Information <a name="moreinfo"></a>
 This is the end of the data visualization explanations. To see more examples and the inspiration behind this app, visit : [here](https://bioconductor.org/packages/devel/data/experiment/vignettes/HMP16SData/inst/doc/HMP16SData.html#analysis-using-the-phyloseq-package) 
+
+<a href="#top">Back to top</a>

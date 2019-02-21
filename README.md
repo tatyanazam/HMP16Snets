@@ -8,6 +8,16 @@ output:
 ---
 
 
+This is an app to analyze and visualize HMP16S (Human Microbiome Project 16S rRNA) data, from the `HMP16Data` package in R. Common microbiome analysis steps, from Relative Abundance to Network Analysis, can be customized by categories including body site, sex, and taxonomic classification level. 
+
+To run this app, first execute the following in R:
+First,make sure shiny is installed. If not yet installed, run:
+`library(shiny)`
+Now, use the convenient `runGitHub` function to see my app in action:
+```runGitHub("HMP16Snets", "tatyanazam")
+```
+
+
 ## Objective
 The goal of this app was to easily visualize and compare microbial community compositions between selected human body subsites using the publicly available HMP (Human Microbiome Project) V1-3 16S amplicon data found within the HMP16SData library in R. Microbiome analysis often involves conducting a relative abundance analysis, alpha diversity analysis, ordination analysis, and recently network analysis to understand the composition, relative abundance, and role of microbial species within a specific environment. Here, I wanted to compare the species presence, abundance, and overall networks between different human body sites, while also making the comparison easy and replicable, even for users unfamiliar with microbiome analysis. 
 
@@ -232,4 +242,4 @@ p2
 #ggplotly(p2)
 ```
 
-This is the end of the data visualization explanations. To see more examples and the inspiration behind this app, visit : https://bioconductor.org/packages/devel/data/experiment/vignettes/HMP16SData/inst/doc/HMP16SData.html#analysis-using-the-phyloseq-package
+This is the end of the data visualization explanations. To see more examples and the inspiration behind this app, visit : [here](https://bioconductor.org/packages/devel/data/experiment/vignettes/HMP16SData/inst/doc/HMP16SData.html#analysis-using-the-phyloseq-package) 

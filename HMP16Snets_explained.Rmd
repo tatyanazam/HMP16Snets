@@ -11,7 +11,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.path = "README_figs/README-")
 ```
-This is an app to analyze and visualize HMP16S (Human Microbiome Project 16S rRNA) data, from the **HMP16Data** package in R. Common microbiome analysis steps, from Relative Abundance to Network Analysis, can be customized by categories including body site, sex, and taxonomic classification level. 
+This is an app to analyze and visualize HMP16S (Human Microbiome Project 16S rRNA) data, from the **HMP16Data** package, in R. Common microbiome analysis steps, from Relative Abundance to Network Analysis, can be customized by categories including body site, sex, and taxonomic classification level. 
+
+Run this app in your R console by writing `runGitHub("HMP16Snets", "tatyanazam")`
+
 
 # Table of contents
 

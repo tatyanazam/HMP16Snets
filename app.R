@@ -92,7 +92,7 @@ server <- function(input, output, session){
   load("V13_HMP_phylo1.RData")
   
   #Relative Abundance Analysis
-  load("~/HMP16S/all_subsite_phylos.RData")
+  load("all_subsite_phylos.RData")
   output$abund_plot <- renderPlot({
   phylo_to_use = new_body_site_phylo[[input$bsite]]
   plot_bar(phylo_to_use, x = "Sample", y = "Abundance", fill = input$rank) + 

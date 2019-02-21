@@ -89,7 +89,7 @@ server <- function(input, output, session){
   library(SpiecEasi)
   library(ggplot2)
   library(plotly)
-  load("~/HMP16S/V13_HMP_phylo1.RData")
+  load("V13_HMP_phylo1.RData")
   
   #Relative Abundance Analysis
   load("~/HMP16S/all_subsite_phylos.RData")
@@ -102,7 +102,7 @@ server <- function(input, output, session){
     ggtitle(paste(input$bsite, input$rank, "Relative Abundance", sep=" "))
   })
   
-  load("~/HMP16S/V13_HMP_allsubsites.RData")
+  load("V13_HMP_allsubsites.RData")
   V13_HMP_psmelt_3 <- psmelt(V13_HMP_phylo1_allsubsites3)
   
   output$all_subsite_abund_plot <-renderPlot({
@@ -122,7 +122,7 @@ server <- function(input, output, session){
   })
   
   #PCoA Analysis
-  load("~/HMP16S/V13_HMP_ord.RData")
+  load("V13_HMP_ord.RData")
     
   V13_HMP_phylo1_ord_100 <- ordinate(V13_HMP_phylo1_100, method="PCoA", distance="bray")
   ord_plot <- reactive({
@@ -137,7 +137,7 @@ server <- function(input, output, session){
     ord_plot()
   })
   
-  load("~/HMP16S/V13_HMP_spiec.RData")
+  load("V13_HMP_spiec.RData")
   V13_HMP_phylo.f1 <- merge_phyloseq(V13_HMP_phylo.f, sample_data(V13_HMP_phylo1))
   output$net_plot <- renderPlotly({
     p <- plot_network(V13_HMP_spiec.graph, V13_HMP_phylo.f1, type="taxa", color= input$tax_rank, label=NULL) + ggtitle(paste("Combined Body Subsite Network","at", input$tax_rank, sep = " "))
@@ -149,7 +149,7 @@ server <- function(input, output, session){
     ggplotly(p)
     })
   
-  load("~/HMP16S/HMP_subsite_graphs_list.RData")
+  load("HMP_subsite_graphs_list.RData")
   output$net2_plot <- renderPlotly({
     new_phylo_for_net <- subsite_graphs_list[[input$net_type]]
     new_subsite_plot <- plot_network(new_phylo_for_net[["Graph"]], new_phylo_for_net[["Phylo"]], type='taxa', color= input$taxa_class, label=NULL) + ggtitle(paste(input$net_type, input$taxa_class, "Network", sep= " "))

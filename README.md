@@ -12,10 +12,15 @@ This is an app to analyze and visualize HMP16S (Human Microbiome Project 16S rRN
 
 To run this app, first execute the following in R:
 First,make sure shiny is installed. If not yet installed, run:
+
+
 `library(shiny)`
+
+
 Now, use the convenient `runGitHub` function to see my app in action:
-```runGitHub("HMP16Snets", "tatyanazam")
-```
+
+
+`runGitHub("HMP16Snets", "tatyanazam")`
 
 
 ## Objective
